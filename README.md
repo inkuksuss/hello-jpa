@@ -93,7 +93,7 @@ public class Member {
     + double, float 타입에 적용 X
 
 ## @Enumerated
-### Enum 타입을 매핑할 때 사용 X
+### Enum 타입을 매핑할 때 사용
 + ### 속성
   + EnumType.ORDINAL: enum의 순서를 저장 
     + #### Default이지만 Enum 순서 변경 시 문제가 됨으로 사용 X
@@ -121,7 +121,7 @@ public class Member {
     + @SequenceGenerator 필요
   + TABLE: 키 생성용 테이블 사용
     + @TableGenerator 필요
-  + 방언에 따라 자동 지정
+  + AUTO: 방언에 따라 자동 지정
 
 ### IDENTITY
   + 기본키 생성을 DB에 위임
