@@ -16,17 +16,18 @@ public class JpaMain {
         tx.begin();
 
         try {
-            //비영속
-            Member member = new Member();
-//            member.setId(3L);
-//            member.setName("userC");
-//
-//            //영속
-//            em.persist(member);
+            Movie movie = new Movie();
+            movie.setDirector("a");
+            movie.setActor("b");
+            movie.setName("avatar");
+            movie.setPrice(10000);
+            em.persist(movie);
 
-//            Member findMember = em.find(Member.class, 3L);
-//            System.out.println("findMember = " + findMember.getName());
+            em.flush();
+            em.clear();
 
+            Item item = em.find(Item.class, movie.getId());
+            System.out.println("item = " + item);
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
