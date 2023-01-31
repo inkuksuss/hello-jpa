@@ -1,35 +1,42 @@
 package hellojpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 public class JpaMain {
 
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
-
+        PersistenceUnitUtil persistenceUnitUtil = emf.getPersistenceUnitUtil();
         EntityManager em = emf.createEntityManager();
 
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Movie movie = new Movie();
-            movie.setDirector("a");
-            movie.setActor("b");
-            movie.setName("avatar");
-            movie.setPrice(10000);
-            em.persist(movie);
+
+            Member member1 = new Member();
+            member1.setUsername("hello");
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("hello");
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            Item item = em.find(Item.class, movie.getId());
-            System.out.println("item = " + item);
+            Member reference = em.getReference(Member.class, member1.getId());
+            System.out.println("reference = " + reference.getClass());
+            Hibernate.initialize(reference);
+            System.out.println("isLoaded = " + persistenceUnitUtil.isLoaded(reference));
+
+
             tx.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             tx.rollback();
         } finally {
             em.close();
