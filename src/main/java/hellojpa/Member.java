@@ -2,7 +2,7 @@ package hellojpa;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 //@SequenceGenerator(name = "member_seq_generator", sequenceName = "member_seq")
@@ -10,42 +10,30 @@ import java.util.Date;
 public class Member extends BaseEntity {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "MEMBER_SEQ_GENERATOR")
     private Long id;
 
     @Column(name = "name")
     private String username;
 
-    private Integer age;
+    @Embedded
+    private Period workPeriod;
 
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+    @Embedded
+    private Address homeAddress;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+    @Column(name = "FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+//    @ElementCollection
+//    @CollectionTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+//    private List<Address> addressHistory = new ArrayList<>();
 
-    @Lob
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
-    private Team team;
-
-    @Transient
-    private int temp;
-
-    public Member() {
-    }
-
-    public Member(Long id, String username) {
-        this.id = id;
-        this.username = username;
-    }
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
     public Long getId() {
         return id;
     }
@@ -58,56 +46,39 @@ public class Member extends BaseEntity {
         return username;
     }
 
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<AddressEntity> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<AddressEntity> addressHistory) {
+        this.addressHistory = addressHistory;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public Integer getAge() {
-        return age;
+    public Period getWorkPeriod() {
+        return workPeriod;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
     }
 
-    public RoleType getRoleType() {
-        return roleType;
+    public Address getHomeAddress() {
+        return homeAddress;
     }
 
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
-    }
-
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public int getTemp() {
-        return temp;
-    }
-
-    public void setTemp(int temp) {
-        this.temp = temp;
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
     }
 }
